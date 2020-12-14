@@ -5,13 +5,22 @@
 ## mk
 ##
 
-SRCS	=	main.c				\
-			src/check_main.c 		\
-			src/pa_pb_ra.c 		\
+SRCS	=	src/main.c	\
+			src/player.c 			\
+			src/creat_check_map.c  	\
+			src/setsignal.c 		\
+			src/print_map.c 		\
+			src/send_pos.c 			\
+			src/attack.c	\
+			src/connection.c
+
+SRCS_two =  get_table1.c	\
+
+SRCS_UNIT =     tests/test_pushswap.c		\
 
 OBJS	=	$(SRCS:.c=.o)
 
-NAME	=	push_swap
+NAME	=	navy
 
 RM	=		rm -f
 
@@ -36,5 +45,14 @@ clean:
 fclean:		clean
 			make fclean -C ./lib/my/
 			$(RM) $(NAME)
+			$(RM) *.gcno
+			$(RM) *.gcda
+			$(RM) -f *.o
+			$(RM) unit_tests
 
 re:			fclean all
+
+tests_run:	fclean
+			gcc -o unit_tests $(SRCS_two) $(SRCS_UNIT) $(INC) --coverage -lcriterion
+			./unit_tests
+			gcovr

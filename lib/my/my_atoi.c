@@ -24,13 +24,3 @@ int my_atoi(char *str)
     }
     return ((sign == 0) ? (res) : (-res));
 }
-
-int my_atoi_error(char *str)
-{
-    while (*str != '\0') {
-        if ((*str < '0' || *str > '9') && *str != '-')
-            return (1);
-        str += 1;
-    }
-    return (0);
-}
