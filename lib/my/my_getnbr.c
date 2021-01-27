@@ -9,13 +9,8 @@
 
 int my_getnbr(char *str)
 {
-    int nb;
-    int	isneg;
-    int	i;
+    int nb = 0, isneg = 1, i = 0;
 
-    isneg = 1;
-    nb = 0;
-    i = 0;
     while (str[i] == '+' || str[i] == '-') {
         if (str[i] == '-')
             isneg = isneg * -1;

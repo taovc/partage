@@ -9,6 +9,10 @@
 
 int my_put_nbr(int nb)
 {
+    if (nb == -2147483648) {
+        my_putstr("-2147483648");
+        return 0;
+    }
     if (nb < 0) {
         my_putchar('-');
         nb = nb * (-1);

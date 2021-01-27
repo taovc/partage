@@ -25,7 +25,7 @@ void my_put_bis(char *str)
     start = 0;
     while (str[start] != '\0') {
         if (str[start] < 32 || str[start] >= 127) {
-            my_putstr("\\00");
+            my_putstr("\\0");
             my_put_nbr_octal((int)str[start]);
             start++;
         } else {
@@ -38,21 +38,41 @@ void my_put_bis(char *str)
 void my_put_nbr_hexa(unsigned int nb)
 {
     unsigned int len;
+    char str[20];
+    int i = 19, tmp = nb;
 
     len = 16;
-    if (nb >= len - 1)
-        my_put_nbr_hexa(nb / len);
-    my_putchar(hexa[nb % len]);
+    while (nb >= len - 1) {
+        str[i] = (hexa[nb % len]);
+        nb = nb / len, i--;
+    }
+    str[i] = (hexa[nb % len]);
+    if (tmp < 0) {
+        for (int j = 19; i <= j; i++)
+            (str[i] != '0') ? my_putchar(str[i]) : 0;
+    }
+    for (int j = 19; i <= j; i++)
+        my_putchar(str[i]);
 }
 
 void my_put_nbr_hexa_l(unsigned int nb)
 {
     unsigned int len;
+    char str[20];
+    int i = 19, tmp = nb;
 
     len = 16;
-    if (nb >= len - 1)
-        my_put_nbr_hexa_l(nb / len);
-    my_putchar(ab[nb % len]);
+    while (nb >= len - 1) {
+        str[i] = (ab[nb % len]);
+        nb = nb / len, i--;
+    }
+    str[i] = (ab[nb % len]);
+    if (tmp < 0) {
+        for (int j = 19; i <= j; i++)
+            (str[i] != '0') ? my_putchar(str[i]) : 0;
+    }
+    for (int j = 19; i <= j; i++)
+        my_putchar(str[i]);
 }
 
 int my_put_nbr_bin(unsigned int nb)

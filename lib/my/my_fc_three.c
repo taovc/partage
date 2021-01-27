@@ -14,7 +14,7 @@ void condition(int i, va_list ap, char *str)
         i++;
         pint_sp(str, i, ap);
     }
-    else if (str[i - 1] == '#' &&
+    else if (str[i - 1] == '#' && str[i - 2] && str[i - 2] == '%' &&
             (str[i] == 'x' || str[i] == 'o' || str[i] == 'X'))
         i += 0;
     else

@@ -37,12 +37,61 @@ void check_str(va_list ap, int i, char *str)
         flag[a].fc(ap);
 }
 
+int check_all_print2(char *str)
+{
+    int j = 0, len = 0;
+
+    for (int i = 0; str[i]; i++, len++) {
+        (str[i] == '%') ? j = 1, len = 0 : 0;
+        if ((str[i] == 'x' || str[i] == 'X' || str[i] == 'o')
+            && j == 1 && (len != 1 && len != 2))
+            return 84;
+        if (len == 2 && str[i - 1] != '#' && j == 1 &&
+            (str[i] == 'x' || str[i] == 'X' || str[i] == 'o'))
+            return 84;
+        if ((str[i] == 'x' || str[i] == 'X' || str[i] == 'o')
+            && j == 1)
+            j = 0, len = 0;
+        if ((str[i] == 'x' || str[i] == 'X' || str[i] == 'o')
+            && ((str[i - 1] == '%' && str[i - 2] == '%')
+            || (str[i - 1] == '#' && str[i - 2] == '%' && str[i - 3] == '%')))
+            return 84;
+    }
+    return 0;
+}
+
+int check_all_print(char *str)
+{
+    int j = 0, len = 0;
+
+    for (int i = 0; str[i]; i++, len++) {
+        (str[i] == '%') ? j = 1, len = 0 : 0;
+        if ((str[i] == 'd' || str[i] == 'u' || str[i] == 'i'
+            || str[i] == 'c' || str[i] == 's' || str[i] == 's'
+            || str[i] == 'S' || str[i] == 'b' || str[i] == 'p')
+            && j == 1 && len != 1)
+            return 84;
+        if ((str[i] == 'd' || str[i] == 'u' || str[i] == 'i'
+            || str[i] == 'c' || str[i] == 's' || str[i] == 's'
+            || str[i] == 'S' || str[i] == 'b' || str[i] == 'p') && j == 1)
+            j = 0, len = 0;
+        if ((str[i] == 'd' || str[i] == 'u' || str[i] == 'i'
+            || str[i] == 'c' || str[i] == 's' || str[i] == 's'
+            || str[i] == 'S' || str[i] == 'b' || str[i] == 'p')
+            && str[i - 1] == '%' && str[i - 2] == '%')
+            return 84;
+    }
+    return 0;
+}
+
 void my_printf(char *str, ...)
 {
     va_list ap;
     int i = -1;
 
     va_start(ap, str);
+    if (check_all_print(str) == 84 || check_all_print2(str) == 84)
+        return;
     while (str[++i]) {
         condition(i, ap, str);
         if (str[i] == '%')

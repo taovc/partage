@@ -1,69 +1,62 @@
 /*
-** EPITECH PROJECT, 2020
-** main
+** EPITECH PROJECT, 2021
+** main.c
 ** File description:
 ** main
 */
 
 #include "my.h"
-#include <signal.h>
-#include "navy.h"
 #include "print.h"
+#include "mini.h"
+#include <stdio.h>
 
-glo *glb;
-
-char *swap_char(char *str, int a, int b)
+int use_commond(mini *ms)
 {
-    char tmp = str[a];
-
-    str[a] = str[b];
-    str[b] = tmp;
-    return str;
+    if (ms->exe != NULL) {
+        if (fork() == 0)
+            return execve(ms->exe, ms->cmmd, ms->env);
+        else {
+            wait(&ms->stat);
+            (isatty(0) == 1) ? my_printf("$>") : 0;
+        }
+        if (match_str(ms->cmmd[0], "cd") == 0)
+            chdir(ms->cmmd[1]);
+    }
+    return 1;
 }
 
-char *setmap2(char *str)
+int main(int ac, char **av, char **env)
 {
-    for (int i = 0; i <= 24; i += 8) {
-        if (str[2 + i] == str[5 + i] && str[3 + i] > str[6 + i])
-            swap_char(str, 3 + i, 6 + i);
-        if (str[3 + i] == str[6 + i] && str[2 + i] > str[5 + i])
-            swap_char(str, 2 + i, 5 + i);
-    }
-    return str;
-}
+    mini *ms = creat_env(ac, av, env);
+    int i = 0;
+    size_t len;
 
-int connect(map *player, int ac, char **av)
-{
-    if (ac == 2) {
-        player->str = setmap(1, player->str, av);
-        if (player->str == NULL || check_pos(player->str) == 84)
-            return 84;
-        player->str = setmap2(player->str);
-        player = creat_map(player);
-        if (player->map1 == NULL || play_one(player) == 84)
-            return 84;
-    }
-    if (ac == 3) {
-        player->str = setmap(2, player->str, av);
-        if (player->str == NULL || check_pos(player->str) == 84)
-            return 84;
-        player->str = setmap2(player->str);
-        player = creat_map(player);
-        if (player->map1 == NULL || play_two(player, av) == 84)
-            return 84;
-    }
-    return 0;
-}
-
-int main(int ac, char **av)
-{
-    map *player;
-
-    player = malloc(sizeof(map));
-    stup_glo();
-    if (connect(player, ac, av) == 84)
+    if (ms == NULL) {
+        write(2, "error\n", 6);
         return 84;
-    if (ac != 2 && ac != 3)
-        return 84;
+    }
+    if (isatty(0) == 1)
+        my_printf("$>");
+    while (getline(&ms->str, &len, stdin) != EOF) {
+        ms->exe = getbinaire(ms, ms->str);
+        if ((i = use_commond(ms)) != 1)
+            return i;
+        if (match_str(ms->cmmd[0], "exit") == 0 &&
+            ms->cmmd[1] == NULL)
+            return 0;
+        /*if (match_str(ms->cmmd[0], "setenv") == 0) {
+            ms->env = str_to_array(ms->cmmd[1], ms->env, ':');
+            if (fork() == 0)
+                return execve("/bin/env", ms->cmmd, ms->env);
+            else {
+                wait(&ms->stat);
+                (isatty(0) == 1) ? my_printf("$>") : 0;
+        }*/
+        if (ms->exe == NULL) {
+            write(2, "command not find\n", 17);
+            my_printf("$>");
+        }
+        ms->exe = NULL, ms->cmmd = NULL;
+    }
     return 0;
 }

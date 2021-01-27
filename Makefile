@@ -6,21 +6,12 @@
 ##
 
 SRCS	=	src/main.c	\
-			src/player.c 			\
-			src/creat_check_map.c  	\
-			src/setsignal.c 		\
-			src/print_map.c 		\
-			src/send_pos.c 			\
-			src/attack.c	\
-			src/connection.c
-
-SRCS_two =  get_table1.c	\
-
-SRCS_UNIT =     tests/test_pushswap.c		\
+			src/find_binaire.c 	\
+			src/creat_env.c 	\
 
 OBJS	=	$(SRCS:.c=.o)
 
-NAME	=	navy
+NAME	=	mysh
 
 RM	=		rm -f
 
@@ -51,8 +42,3 @@ fclean:		clean
 			$(RM) unit_tests
 
 re:			fclean all
-
-tests_run:	fclean
-			gcc -o unit_tests $(SRCS_two) $(SRCS_UNIT) $(INC) --coverage -lcriterion
-			./unit_tests
-			gcovr
