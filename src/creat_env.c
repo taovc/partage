@@ -10,21 +10,44 @@
 #include "mini.h"
 #include <stdio.h>
 
-void creat_path_2(char **env, mini *ms, int i)
+char *find_env_2(char **env, mini *ms, int i, int len)
 {
-    int j = 5;
+    int k = 0;
 
-    if (env[i][0] == 'P' && env[i][1] == 'A'
-        && env[i][2] == 'T' && env[i][3] == 'H' && env[i][4] == '=') {
-        ms->path = malloc(sizeof(char) * (my_strlen(env[i]) - 5));
-        for (int k = 0; env[i][j]; ms->path[k] = env[i][j], k++, j++);
-    }
+    ms->line = malloc(sizeof(char) * (my_strlen(env[i]) - len));
+    for (; env[i][len]; ms->line[k] = env[i][len], k++, len++);
+    ms->line[k + 1] = '\0';
+    return ms->line;
 }
 
-void creat_path(char **env, mini *ms)
+char *find_env(mini *ms, char *str, int len)
 {
-    for (int i = 0; env[i]; i++)
-        creat_path_2(env, ms, i);
+    int i = 0;
+
+    ms->line = NULL;
+    while (ms->env[i] != NULL) {
+        if (strncmp(ms->env[i], str, len) == 0)
+            ms->line = find_env_2(ms->env, ms, i, len);
+        i++;
+    }
+    return ms->line;
+}
+
+char **cp_array(char **dest, char **array)
+{
+    int y = 0, len = 0;
+
+    for (; array[y] != NULL; y++);
+    dest = malloc(sizeof(char *) * y);
+    for (int i = 0; array[i] != NULL; i++) {
+        for (len = 0; array[i][len]; len++);
+        dest[i] = malloc(sizeof(char) * len);
+        for (len = 0; array[i][len]; len++)
+            dest[i][len] = array[i][len];
+        dest[i][len] = '\0';
+    }
+    dest[y] = NULL;
+    return dest;
 }
 
 mini *creat_env(int ac, char **av, char **env)
@@ -36,7 +59,13 @@ mini *creat_env(int ac, char **av, char **env)
     signal(SIGINT, SIG_IGN);
     ms = malloc(sizeof(mini));
     ms->str = NULL;
-    creat_path(env, ms);
-    ms->env = str_to_array(ms->path, ms->env, ':');
+    ms->exe = NULL;
+    ms->env = cp_array(ms->env, env);
+    ms->path = find_env(ms, "PATH=\0", 5);
+    if (ms->path == NULL)
+        ms->path = my_strdup("/home/vc/.local/bin:/home/vc/bin:"
+        "/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin\0");
+    ms->bina = str_to_array(ms->path, ms->bina, ':');
+    prt_arry(ms->bina);
     return ms;
 }

@@ -12,7 +12,7 @@ char *my_strdup(char const *src)
     char *dest;
     int i = 0;
 
-    dest = malloc(sizeof(char) * (my_strlen(src) + 1));
+    dest = malloc(sizeof(char) * (my_strlen(src)));
     while (src[i] != '\0') {
         dest[i] = src[i];
         i++;

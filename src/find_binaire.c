@@ -25,12 +25,12 @@ int match_str(char *str, char *str2)
 
 char *find_match(mini *ms, char *str)
 {
-    ms->exe = my_memset(ms->exe,
-        my_strlen(str) + my_strlen(ms->cmmd[0]));
-    for (int j = 0; str[j]; ms->exe[j] = str[j], j++);
-    ms->exe[my_strlen(str)] = '/';
-    for (int z = my_strlen(str) + 1, k = 0; ms->cmmd[0][k];
-        ms->exe[z + k] = ms->cmmd[0][k], k++);
+    int len = my_strlen(str) + my_strlen(ms->cmmd[0]);
+
+    ms->exe = my_memset(ms->exe, len);
+    ms->exe = my_strcat(ms->exe, str);
+    ms->exe = my_strcat(ms->exe, "/");
+    ms->exe = my_strcat(ms->exe, ms->cmmd[0]);
     return ms->exe;
 }
 
@@ -49,6 +49,7 @@ char *find_ex(mini *ms, char *str)
         if (buf.st_mode & S_IXUSR &&
             match_str(direntp->d_name, ms->cmmd[0]) == 0) {
             ms->exe = find_match(ms, str);
+            printf("%s\n", ms->exe);
             return ms->exe;
         }
         direntp = readdir(dir);
@@ -64,8 +65,14 @@ char *getbinaire(mini *ms, char *str)
         return ms->exe;
     }
     ms->cmmd = str_to_array(str, ms->cmmd, ' ');
-    for (int z = 0; ms->env[z] != NULL; z++)
+    prt_arry(ms->cmmd);
+    ms->path = find_env(ms, "PATH=", 5);
+    //if (ms->path == NULL)
+    //    ms->path = my_strdup("/home/vc/.local/bin:/home/vc/bin:/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin");
+    ms->bina = str_to_array(ms->path, ms->bina, ':');
+    ms->exe = NULL;
+    for (int z = 0; ms->bina[z] != NULL; z++)
         if (ms->exe == NULL)
-            ms->exe = find_ex(ms, ms->env[z]);
+            ms->exe = find_ex(ms, ms->bina[z]);
     return ms->exe;
 }

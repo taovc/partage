@@ -21,8 +21,10 @@
 typedef struct mini
 {
     char *path;
+    char *line;
     char *exe;
     char **env;
+    char **bina;
     char **cmmd;
     char *str;
     int stat;
@@ -33,7 +35,8 @@ int match_str(char *str, char *str2);
 char *find_match(mini *ms, char *str);
 char *find_ex(mini *ms, char *str);
 char *getbinaire(mini *ms, char *str);
-void creat_path_2(char **env, mini *ms, int i);
-void creat_path(char **env, mini *ms);
+char *find_env_2(char **env, mini *ms, int i, int len);
+char *find_env(mini *ms, char *str, int len);
+char **cp_array(char **dest, char **array);
 mini *creat_env(int ac, char **av, char **env);
 #endif /* H_MINI_H_ */

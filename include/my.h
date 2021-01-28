@@ -19,15 +19,13 @@
 
 typedef struct stroa
 {
-    int indx;
-    int len;
-    int indy;
-    int flag;
-    int leny;
+    int i;
+    int ay;
+    int lenx;
 } sta;
 
-void str_to_array_2(char *str, char **comd, char a, sta *st);
-char **str_to_array(char *str, char **comd, char a);
+char **str_to_arry_2(char *str, char ** arry, char a, sta *st);
+char **str_to_array(char *str, char **arry, char a);
 char *my_memset(char *str, int len);
 int my_min(int x, int y);
 int my_max(int x, int y);
@@ -80,4 +78,5 @@ int count_words(char const *str);
 char    **my_str_to_word_array(char const *);
 int    word_len(char const *, int);
 int    my_show_word_array(char **);
+void prt_arry(char **arry);
 #endif /* _MY_H_ */
